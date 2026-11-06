@@ -1,0 +1,88 @@
+name: AFMC
+options:
+  bundleIdPrefix: com.afmc
+  deploymentTarget:
+    iOS: "18.0"
+  xcodeVersion: "27.0"
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    IPHONEOS_DEPLOYMENT_TARGET: "18.0"
+    CODE_SIGNING_ALLOWED: "NO"
+targets:
+  AFMC:
+    type: application
+    platform: iOS
+    sources:
+      - path: AFMC
+    dependencies:
+      - framework: ../.tools/tskit/TorrServerKit.xcframework
+        embed: true
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.afmc.find
+        PRODUCT_NAME: AFMC
+        MARKETING_VERSION: "0.1.0"
+        CURRENT_PROJECT_VERSION: "1"
+        TARGETED_DEVICE_FAMILY: "1"
+        GENERATE_INFOPLIST_FILE: NO
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+    info:
+      path: AFMC/Info.plist
+      properties:
+        CFBundleDisplayName: AFMC FIND
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        ITSAppUsesNonExemptEncryption: false
+        UILaunchScreen: {}
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+          - UIInterfaceOrientationLandscapeLeft
+          - UIInterfaceOrientationLandscapeRight
+        UIBackgroundModes:
+          - audio
+        UIRequiresFullScreen: true
+        NSAppTransportSecurity:
+          NSAllowsLocalNetworking: true
+        NSLocalNetworkUsageDescription: 连接局域网内的 Jackett / Torznab 搜索服务
+  AFMCTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - path: AFMCTests
+    dependencies:
+      - target: AFMC
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.afmc.find.tests
+        GENERATE_INFOPLIST_FILE: YES
+        TEST_HOST: $(BUILT_PRODUCTS_DIR)/AFMC.app/AFMC
+        BUNDLE_LOADER: $(TEST_HOST)
+
+  AFMCUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources:
+      - path: AFMCUITests
+    dependencies:
+      - target: AFMC
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.afmc.find.uitests
+        GENERATE_INFOPLIST_FILE: YES
+        TEST_TARGET_NAME: AFMC
+
+schemes:
+  AFMC:
+    build:
+      targets:
+        AFMC: all
+        AFMCTests: [test]
+        AFMCUITests: [test]
+    run:
+      config: Debug
+    test:
+      config: Debug
+      targets:
+        - AFMCTests
+        - AFMCUITests
